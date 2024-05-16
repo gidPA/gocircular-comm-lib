@@ -22,14 +22,13 @@ void setup()
 
 void loop()
 {
-  if(Serial2.available()){
-    Serial.println("Incoming message");
-    messageExchange.handleIncomingMessage();
-    messageExchange.previewMessage();
-  }
+  // if(Serial2.available()){
+  //   Serial.println("Incoming message");
+  //   messageExchange.handleIncomingMessage();
+  //   messageExchange.previewMessage();
+  // }
 
-  // messageExchange.previewMessage();
-  // messageExchange.sendMessage();
-  // Serial1.println("test");
-  // delay(3000);
+  messageExchange.previewMessage();
+  messageExchange.sendMessage();
+  delay(3000);
 }

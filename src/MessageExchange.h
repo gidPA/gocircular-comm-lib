@@ -12,7 +12,7 @@ enum messageTopic
     BEGIN_TRANSACTION,     // begin transaction, no payloads
     ITEM_ENTRY,            // an item is entered, 4 payloads (success/failure, material, size, points granted)
     SET_MEMBER_MODE,       // specify whether the following transaction is going to run with a companion app, no payload.
-    SET_EXCHANGE_RATE,     // set exchange rate (to be used after server triggers system-wide exchange rate changes). 1 payload.
+    SET_EXCHANGE_RATE,     // set exchange rate (to be used after server triggers system-wide exchange rate changes). 2 payloads.
     READY_FOR_TRANSACTION, // tell IoT gateway that system is ready for transaction. In turn, IoT gateway forwards this to the mobile app. No payload.
     TRANSACTION_COMPLETE,  // finish transaction. No payloads.
     BIN_FULL,              // trigger an alert to be sent the server that this particular bin is full. 1 payload (specifies the full bin)

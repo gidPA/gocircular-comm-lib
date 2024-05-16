@@ -120,7 +120,10 @@ byte MessageExchange::handleIncomingMessage()
         int nextByte = Serial.peek();
 
         if(nextByte == MESSAGE_START_CODE){
-            uartDevice->readBytesUntil(MESSAGE_END_CODE, message, MESSAGE_SIZE - 1 );
+            //uartDevice->readBytesUntil(MESSAGE_END_CODE, message, MESSAGE_SIZE - 1 );
+            for (int i = 0; i < MESSAGE_SIZE - 1; i++){
+                message[i] = (byte)uartDevice->read();
+            }
             
         }
         clearSerialBuffer();
