@@ -6,29 +6,30 @@ MessageExchange messageExchange;
 void setup()
 {
   Serial.begin(115200);
-  Serial2.begin(115200);
+  Serial1.begin(115200);
 
-  messageExchange.setUartDevice(&Serial2);
+  messageExchange.setUartDevice(&Serial1);
   messageExchange.setUartMonitoringDevice(&Serial);
 
-  messageExchange.createNewMessage(ITEM_ENTRY);
-  messageExchange.setItemEntryStatus(ACCEPTED);
-  messageExchange.setItemSize(LARGE);
-  messageExchange.setItemType(PLASTIC_COLOURED);
-  messageExchange.setItemPoint(40);
+  // messageExchange.createNewMessage(ITEM_ENTRY);
+  // messageExchange.setItemEntryStatus(ACCEPTED);
+  // messageExchange.setItemSize(LARGE);
+  // messageExchange.setItemType(PLASTIC_COLOURED);
+  // messageExchange.setItemPoint(40);
 
 }
 
 
 void loop()
 {
-  // if(Serial2.available()){
-  //   Serial.println("Incoming message");
-  //   messageExchange.handleIncomingMessage();
-  //   messageExchange.previewMessage();
-  // }
+  if(Serial1.available()){
+    Serial.println("Incoming message");
+    messageExchange.handleIncomingMessage();
+    messageExchange.previewMessage();
+  }
 
-  messageExchange.previewMessage();
-  messageExchange.sendMessage();
-  delay(3000);
+  // messageExchange.previewMessage();
+  // messageExchange.sendMessage();
+  // Serial1.println("test");
+  // delay(3000);
 }

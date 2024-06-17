@@ -140,6 +140,7 @@ byte MessageExchange::handleIncomingMessage()
         }
     }
 
+    
     return message[1];
 }
 
