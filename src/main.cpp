@@ -1,14 +1,16 @@
 #include "MessageExchange.h"
 #include "Arduino.h"
 
+#define SERIAL_BUFFER_SIZE 128
+
 MessageExchange messageExchange;
 
 void setup()
 {
   Serial.begin(115200);
-  Serial1.begin(115200);
+  Serial2.begin(115200);
 
-  messageExchange.setUartDevice(&Serial1);
+  messageExchange.setUartDevice(&Serial2);
   messageExchange.setUartMonitoringDevice(&Serial);
 
   // messageExchange.createNewMessage(ITEM_ENTRY);
@@ -16,20 +18,16 @@ void setup()
   // messageExchange.setItemSize(LARGE);
   // messageExchange.setItemType(PLASTIC_COLOURED);
   // messageExchange.setItemPoint(40);
-
 }
 
+void loop() {
+  if (messageExchange.uartDevice->available() > 0) {
+    messageExchange.uartMonitoringDevice->println(" ");
+    messageExchange.uartMonitoringDevice->println("Incoming message");
 
-void loop()
-{
-  if(Serial1.available()){
-    Serial.println("Incoming message");
-    messageExchange.handleIncomingMessage();
-    messageExchange.previewMessage();
+    //Handle semua topik message di sini
   }
 
-  // messageExchange.previewMessage();
-  // messageExchange.sendMessage();
-  // Serial1.println("test");
-  // delay(3000);
+
 }
+

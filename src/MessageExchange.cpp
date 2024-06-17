@@ -14,7 +14,7 @@ void MessageExchange::setUartMonitoringDevice(HardwareSerial *device)
 
 void MessageExchange::createNewMessage(messageTopic topic)
 {
-    //memset(message, 0, sizeof(message)); // initialize message array to 0
+    // memset(message, 0, sizeof(message)); // initialize message array to 0
     message[0] = MESSAGE_START_CODE;
     message[1] = (byte)topic;
     message[MESSAGE_SIZE - 1] = MESSAGE_END_CODE;
@@ -97,14 +97,12 @@ void MessageExchange::previewMessage()
     }
 }
 
-
-
 void MessageExchange::sendMessage()
 {
     if (uartDevice != nullptr)
     {
         uartDevice->write((byte *)message, (MESSAGE_SIZE / sizeof(message[0])));
-        //uartDevice->println("Incoming Message");
+        // uartDevice->println("Incoming Message");
     }
     else
     {
@@ -121,103 +119,141 @@ void MessageExchange::sendMessage()
 
 byte MessageExchange::handleIncomingMessage()
 {
-    if (uartDevice != nullptr)
-    {
-        int nextByte = Serial.peek();
+    uint8_t byteData;
+    int counter = 0;
 
-        if(nextByte == MESSAGE_START_CODE){
-            //uartDevice->readBytesUntil(MESSAGE_END_CODE, message, MESSAGE_SIZE - 1 );
-            for (int i = 0; i < MESSAGE_SIZE - 1; i++){
-                message[i] = (byte)uartDevice->read();
-            }
-            
-        }
-        clearSerialBuffer();
-    }
-    else
+    while (true)
     {
-        if (uartMonitoringDevice != nullptr)
+        byteData = uartDevice->read();
+        if (byteData != 255)
         {
-            uartMonitoringDevice->println("UART device not set."); // Handle the error case where uartDevice is not set
+            message[counter] = byteData;
+            counter += 1;
         }
-        else
+        if (byteData == 254)
         {
-            Serial.println("UART device not set."); // Handle the error case where uartDevice and uartMonitoringDevice are not set
+            break;
         }
     }
 
-    
+    clearSerialBuffer();
+
+    for (int i = 0; i < 10; i++)
+    {
+        uartMonitoringDevice->print(message[i]);
+        uartMonitoringDevice->print(" ");
+        if (message[i] == 254)
+        {
+            uartMonitoringDevice->println();
+            break;
+        }
+    }
     return message[1];
 }
 
 void MessageExchange::warnIfPayloadDoesNotMatchTopic(messageTopic topic, const char *topicName)
 {
-//    if (message[0] != topic)
-//    {
-//        char buffer[100];
-//        snprintf(buffer, 100, "[WARNING!] One or more payload does not match the message topic: %s. Message parsing is likely going to misbehave.", topicName);
-//        if (uartMonitoringDevice != nullptr)
-//        {
-//            uartMonitoringDevice->println(buffer);
-//        }
-//        else
-//        {
-//            Serial.println(buffer); // Handle the error case where uartMonitoringDevice is not set
-//        }
-//    }
+    //    if (message[0] != topic)
+    //    {
+    //        char buffer[100];
+    //        snprintf(buffer, 100, "[WARNING!] One or more payload does not match the message topic: %s. Message parsing is likely going to misbehave.", topicName);
+    //        if (uartMonitoringDevice != nullptr)
+    //        {
+    //            uartMonitoringDevice->println(buffer);
+    //        }
+    //        else
+    //        {
+    //            Serial.println(buffer); // Handle the error case where uartMonitoringDevice is not set
+    //        }
+    //    }
 }
 
-void MessageExchange::clearSerialBuffer() {
-    while (uartDevice->available() > 0) {
+void MessageExchange::clearSerialBuffer()
+{
+    while (uartDevice->available() > 0)
+    {
         uartDevice->read();
     }
 }
 
 // Function to convert messageTopic enum to string
-const char* MessageExchange::getMessageTopicName(messageTopic topic) {
-    switch (topic) {
-        case TOPIC_ERR: return "TOPIC_ERR";
-        case BEGIN_TRANSACTION: return "BEGIN_TRANSACTION";
-        case ITEM_ENTRY: return "ITEM_ENTRY";
-        case SET_MEMBER_MODE: return "SET_MEMBER_MODE";
-        case SET_EXCHANGE_RATE: return "SET_EXCHANGE_RATE";
-        case READY_FOR_TRANSACTION: return "READY_FOR_TRANSACTION";
-        case TRANSACTION_COMPLETE: return "TRANSACTION_COMPLETE";
-        case BIN_FULL: return "BIN_FULL";
-        case COIN_DISPENSER_ALERT: return "COIN_DISPENSER_ALERT";
-        default: return "UNKNOWN_TOPIC";
+const char *MessageExchange::getMessageTopicName(messageTopic topic)
+{
+    switch (topic)
+    {
+    case TOPIC_ERR:
+        return "TOPIC_ERR";
+    case BEGIN_TRANSACTION:
+        return "BEGIN_TRANSACTION";
+    case ITEM_ENTRY:
+        return "ITEM_ENTRY";
+    case SET_MEMBER_MODE:
+        return "SET_MEMBER_MODE";
+    case SET_EXCHANGE_RATE:
+        return "SET_EXCHANGE_RATE";
+    case READY_FOR_TRANSACTION:
+        return "READY_FOR_TRANSACTION";
+    case TRANSACTION_COMPLETE:
+        return "TRANSACTION_COMPLETE";
+    case BIN_FULL:
+        return "BIN_FULL";
+    case COIN_DISPENSER_ALERT:
+        return "COIN_DISPENSER_ALERT";
+    default:
+        return "UNKNOWN_TOPIC";
     }
 }
 
 // Function to convert itemType enum to string
-const char* MessageExchange::getItemTypeName(itemType type) {
-    switch (type) {
-        case ITEM_ERR: return "ITEM_ERR";
-        case PLASTIC_COLOURED: return "PLASTIC_COLOURED";
-        case PLASTIC_TRANSPARENT: return "PLASTIC_TRANSPARENT";
-        case METAL: return "METAL";
-        default: return "UNKNOWN_ITEM_TYPE";
+const char *MessageExchange::getItemTypeName(itemType type)
+{
+    switch (type)
+    {
+    case ITEM_ERR:
+        return "ITEM_ERR";
+    case PLASTIC_COLOURED:
+        return "PLASTIC_COLOURED";
+    case PLASTIC_TRANSPARENT:
+        return "PLASTIC_TRANSPARENT";
+    case METAL:
+        return "METAL";
+    default:
+        return "UNKNOWN_ITEM_TYPE";
     }
 }
 
 // Function to convert itemSize enum to string
-const char* MessageExchange::getItemSizeName(itemSize size) {
-    switch (size) {
-        case SIZE_ERR: return "SIZE_ERR";
-        case SMALL: return "SMALL";
-        case MEDIUM: return "MEDIUM";
-        case LARGE: return "LARGE";
-        default: return "UNKNOWN_SIZE";
+const char *MessageExchange::getItemSizeName(itemSize size)
+{
+    switch (size)
+    {
+    case SIZE_ERR:
+        return "SIZE_ERR";
+    case SMALL:
+        return "SMALL";
+    case MEDIUM:
+        return "MEDIUM";
+    case LARGE:
+        return "LARGE";
+    default:
+        return "UNKNOWN_SIZE";
     }
 }
 
 // Function to convert itemStatus enum to string
-const char* MessageExchange::getItemStatusName(itemStatus status) {
-    switch (status) {
-        case STAT_ERR: return "STAT_ERR";
-        case DECLINED: return "DECLINED";
-        case ACCEPTED: return "ACCEPTED";
-        case PENDING: return "PENDING";
-        default: return "UNKNOWN_STATUS";
+const char *MessageExchange::getItemStatusName(itemStatus status)
+{
+    switch (status)
+    {
+    case STAT_ERR:
+        return "STAT_ERR";
+    case DECLINED:
+        return "DECLINED";
+    case ACCEPTED:
+        return "ACCEPTED";
+    case PENDING:
+        return "PENDING";
+    default:
+        return "UNKNOWN_STATUS";
     }
 }

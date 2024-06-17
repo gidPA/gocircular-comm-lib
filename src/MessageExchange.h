@@ -9,7 +9,7 @@
 
 enum messageTopic
 {
-    TOPIC_ERR,
+    TOPIC_ERR,             // Placeholder for 0, reserved for future use.
     BEGIN_TRANSACTION,     // begin transaction, no payloads
     ITEM_ENTRY,         //an item is entered, 4 payloads (status, material, size, points granted)
     SET_MEMBER_MODE,       // specify whether the following transaction is going to run with a companion app, no payload.
@@ -48,8 +48,7 @@ class MessageExchange
 {
 private:
     byte message[MESSAGE_SIZE];
-    HardwareSerial *uartDevice;
-    HardwareSerial *uartMonitoringDevice;
+
 
     void warnIfPayloadDoesNotMatchTopic(messageTopic type, const char *typeName);
 
@@ -62,6 +61,8 @@ private:
     const char* getItemStatusName(itemStatus);
 
 public:
+    HardwareSerial *uartDevice;
+    HardwareSerial *uartMonitoringDevice;
     MessageExchange();
 
     void setUartDevice(HardwareSerial *device);
