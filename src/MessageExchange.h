@@ -11,7 +11,7 @@ enum messageTopic
 {
     TOPIC_ERR,
     BEGIN_TRANSACTION,     // begin transaction, no payloads
-    ITEM_ENTRY,            // an item is entered, 4 payloads (success/failure, material, size, points granted)
+    ITEM_ENTRY,         //an item is entered, 4 payloads (status, material, size, points granted)
     SET_MEMBER_MODE,       // specify whether the following transaction is going to run with a companion app, no payload.
     SET_EXCHANGE_RATE,     // set exchange rate (to be used after server triggers system-wide exchange rate changes). 2 payloads.
     READY_FOR_TRANSACTION, // tell IoT gateway that system is ready for transaction. In turn, IoT gateway forwards this to the mobile app. No payload.
@@ -55,6 +55,11 @@ private:
 
 
     void clearSerialBuffer();
+
+    const char* getMessageTopicName(messageTopic);
+    const char* getItemTypeName(itemType);
+    const char* getItemSizeName(itemSize);
+    const char* getItemStatusName(itemStatus);
 
 public:
     MessageExchange();

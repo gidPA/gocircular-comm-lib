@@ -85,6 +85,11 @@ void MessageExchange::previewMessage()
     {
         uartMonitoringDevice->print("[MessageExchange Preview]");
         uartMonitoringDevice->println(buffer);
+
+        uartMonitoringDevice->println(getMessageTopicName((messageTopic)message[1]));
+        uartMonitoringDevice->println(getItemTypeName((itemType)message[3]));
+        uartMonitoringDevice->println(getItemSizeName((itemSize)message[4]));
+        uartMonitoringDevice->println(getItemStatusName((itemStatus)message[2]));
     }
     else
     {
@@ -165,5 +170,54 @@ void MessageExchange::warnIfPayloadDoesNotMatchTopic(messageTopic topic, const c
 void MessageExchange::clearSerialBuffer() {
     while (uartDevice->available() > 0) {
         uartDevice->read();
+    }
+}
+
+// Function to convert messageTopic enum to string
+const char* MessageExchange::getMessageTopicName(messageTopic topic) {
+    switch (topic) {
+        case TOPIC_ERR: return "TOPIC_ERR";
+        case BEGIN_TRANSACTION: return "BEGIN_TRANSACTION";
+        case ITEM_ENTRY: return "ITEM_ENTRY";
+        case SET_MEMBER_MODE: return "SET_MEMBER_MODE";
+        case SET_EXCHANGE_RATE: return "SET_EXCHANGE_RATE";
+        case READY_FOR_TRANSACTION: return "READY_FOR_TRANSACTION";
+        case TRANSACTION_COMPLETE: return "TRANSACTION_COMPLETE";
+        case BIN_FULL: return "BIN_FULL";
+        case COIN_DISPENSER_ALERT: return "COIN_DISPENSER_ALERT";
+        default: return "UNKNOWN_TOPIC";
+    }
+}
+
+// Function to convert itemType enum to string
+const char* MessageExchange::getItemTypeName(itemType type) {
+    switch (type) {
+        case ITEM_ERR: return "ITEM_ERR";
+        case PLASTIC_COLOURED: return "PLASTIC_COLOURED";
+        case PLASTIC_TRANSPARENT: return "PLASTIC_TRANSPARENT";
+        case METAL: return "METAL";
+        default: return "UNKNOWN_ITEM_TYPE";
+    }
+}
+
+// Function to convert itemSize enum to string
+const char* MessageExchange::getItemSizeName(itemSize size) {
+    switch (size) {
+        case SIZE_ERR: return "SIZE_ERR";
+        case SMALL: return "SMALL";
+        case MEDIUM: return "MEDIUM";
+        case LARGE: return "LARGE";
+        default: return "UNKNOWN_SIZE";
+    }
+}
+
+// Function to convert itemStatus enum to string
+const char* MessageExchange::getItemStatusName(itemStatus status) {
+    switch (status) {
+        case STAT_ERR: return "STAT_ERR";
+        case DECLINED: return "DECLINED";
+        case ACCEPTED: return "ACCEPTED";
+        case PENDING: return "PENDING";
+        default: return "UNKNOWN_STATUS";
     }
 }
