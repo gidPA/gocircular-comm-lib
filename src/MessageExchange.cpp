@@ -14,7 +14,7 @@ void MessageExchange::setUartMonitoringDevice(HardwareSerial *device)
 
 void MessageExchange::createNewMessage(messageTopic topic)
 {
-    memset(message, 0, sizeof(message)); // initialize message array to 0
+    //memset(message, 0, sizeof(message)); // initialize message array to 0
     message[0] = MESSAGE_START_CODE;
     message[1] = (byte)topic;
     message[MESSAGE_SIZE - 1] = MESSAGE_END_CODE;
@@ -83,6 +83,7 @@ void MessageExchange::previewMessage()
 
     if (uartMonitoringDevice != nullptr)
     {
+        uartMonitoringDevice->print("[MessageExchange Preview]");
         uartMonitoringDevice->println(buffer);
     }
     else
@@ -146,19 +147,19 @@ byte MessageExchange::handleIncomingMessage()
 
 void MessageExchange::warnIfPayloadDoesNotMatchTopic(messageTopic topic, const char *topicName)
 {
-    if (message[0] != topic)
-    {
-        char buffer[100];
-        snprintf(buffer, 100, "[WARNING!] One or more payload does not match the message topic: %s. Message parsing is likely going to misbehave.", topicName);
-        if (uartMonitoringDevice != nullptr)
-        {
-            uartMonitoringDevice->println(buffer);
-        }
-        else
-        {
-            Serial.println(buffer); // Handle the error case where uartMonitoringDevice is not set
-        }
-    }
+//    if (message[0] != topic)
+//    {
+//        char buffer[100];
+//        snprintf(buffer, 100, "[WARNING!] One or more payload does not match the message topic: %s. Message parsing is likely going to misbehave.", topicName);
+//        if (uartMonitoringDevice != nullptr)
+//        {
+//            uartMonitoringDevice->println(buffer);
+//        }
+//        else
+//        {
+//            Serial.println(buffer); // Handle the error case where uartMonitoringDevice is not set
+//        }
+//    }
 }
 
 void MessageExchange::clearSerialBuffer() {

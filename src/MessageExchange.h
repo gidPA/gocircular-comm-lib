@@ -9,6 +9,7 @@
 
 enum messageTopic
 {
+    TOPIC_ERR,
     BEGIN_TRANSACTION,     // begin transaction, no payloads
     ITEM_ENTRY,            // an item is entered, 4 payloads (success/failure, material, size, points granted)
     SET_MEMBER_MODE,       // specify whether the following transaction is going to run with a companion app, no payload.
@@ -21,6 +22,7 @@ enum messageTopic
 
 enum itemType // specify the material type of an item
 {
+    ITEM_ERR,
     PLASTIC_COLOURED,    // for colored plastic bottle
     PLASTIC_TRANSPARENT, // for transparent plastic bottle
     METAL                // for metallic cans
@@ -28,6 +30,7 @@ enum itemType // specify the material type of an item
 
 enum itemSize
 {
+    SIZE_ERR,
     SMALL,  // size = x < y < x
     MEDIUM, // size = x < y < x
     LARGE   // size = x < y < x
@@ -35,8 +38,10 @@ enum itemSize
 
 enum itemStatus
 {
-    REJECTED,
-    ACCEPTED
+    STAT_ERR,
+    DECLINED,
+    ACCEPTED,
+    PENDING
 };
 
 class MessageExchange
