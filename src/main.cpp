@@ -4,27 +4,6 @@
 
 MessageExchange messageExchange;
 
-// void handleNewMessage() {
-//   byte topic = messageExchange.handleIncomingMessage();
-  
-//   Serial.println("Executed handleIncomingMessage()");
-//   Serial.print("Topic: ");
-//   Serial.println(int(topic));
-  
-//   switch(topic) {
-//     case 2:
-//       Serial.println("Handling ITEM_ENTRY");
-//       // Handle item masuk di sini
-//       messageExchange.previewMessage();
-//       break;
-//     case ITEM_ERR:
-//       Serial.println("Handling ITEM_ERR");
-//       break;
-//     default:
-//       Serial.println("Unhandled Topic");
-//       break;
-//   }
-// }
 void handleMessage();
 
 
