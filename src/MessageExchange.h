@@ -11,7 +11,7 @@ enum messageTopic
 {
     TOPIC_ERR,             // Placeholder for 0, reserved for future use.
     BEGIN_TRANSACTION,     // begin transaction, no payloads
-    ITEM_ENTRY,         //an item is entered, 4 payloads (status, material, size, points granted)
+    ITEM_ENTRY,            // an item is entered, 4 payloads (status, material, size, points granted)
     SET_MEMBER_MODE,       // specify whether the following transaction is going to run with a companion app, no payload.
     SET_EXCHANGE_RATE,     // set exchange rate (to be used after server triggers system-wide exchange rate changes). 2 payloads.
     READY_FOR_TRANSACTION, // tell IoT gateway that system is ready for transaction. In turn, IoT gateway forwards this to the mobile app. No payload.
@@ -44,26 +44,19 @@ enum itemStatus
     PENDING
 };
 
-
-
 class MessageExchange
 {
-public:
+private:
     byte message[MESSAGE_SIZE];
 
+    const char *getMessageTopicName(messageTopic);
+    const char *getItemTypeName(itemType);
+    const char *getItemSizeName(itemSize);
+    const char *getItemStatusName(itemStatus);
 
-    void warnIfPayloadDoesNotMatchTopic(messageTopic type, const char *typeName);
-
-
-
-
-    const char* getMessageTopicName(messageTopic);
-    const char* getItemTypeName(itemType);
-    const char* getItemSizeName(itemSize);
-    const char* getItemStatusName(itemStatus);
-
-// public:
     void clearSerialBuffer();
+    
+public:
     HardwareSerial *uartDevice;
     HardwareSerial *uartMonitoringDevice;
     MessageExchange();
@@ -72,9 +65,11 @@ public:
     void setUartMonitoringDevice(HardwareSerial *device);
     void createNewMessage(messageTopic type);
 
+    byte getData(byte byteNum);
+
     /**
      * Methods for ITEM_ENTRY related messages
-    */
+     */
 
     void setItemEntryStatus(itemStatus status);
     byte getItemEntryStatus();
@@ -88,20 +83,19 @@ public:
     void setItemPoint(byte point);
     byte getItemPoint();
 
-    
     /**
      * Methods for SET_EXCHANGE_RATE related messages
-    */
+     */
 
-    //void setExchangeRate(byte )
+    // void setExchangeRate(byte )
 
     /**
      * Methods for Exchanging Messages
-    */
+     */
 
     void previewMessage();
-    
-    //Send message after message has been set
+
+    // Send message after message has been set
     void sendMessage();
     byte handleIncomingMessage();
 };

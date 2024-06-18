@@ -20,10 +20,23 @@ void MessageExchange::createNewMessage(messageTopic topic)
     message[MESSAGE_SIZE - 1] = MESSAGE_END_CODE;
 }
 
+byte MessageExchange::getData(byte byteNum)
+{
+    if (byteNum == 0 || byteNum == MESSAGE_SIZE)
+    {
+        uartMonitoringDevice->println("[MessageExchange] WARNING: You're accessing start or stop byte");
+    }
+    else if (byteNum == 1)
+    {
+        uartMonitoringDevice->println("[MessageExchange] WARNING: You're not supposed to obtain the topic this way!");
+    }
+
+    return message[byteNum];
+}
+
 void MessageExchange::setItemEntryStatus(itemStatus status)
 {
-    warnIfPayloadDoesNotMatchTopic(ITEM_ENTRY, "ITEM_ENTRY");
-    message[2] = (byte)status;
+    message[2] = static_cast<byte>(status);
 }
 
 byte MessageExchange::getItemEntryStatus()
@@ -33,8 +46,8 @@ byte MessageExchange::getItemEntryStatus()
 
 void MessageExchange::setItemType(itemType type)
 {
-    warnIfPayloadDoesNotMatchTopic(ITEM_ENTRY, "ITEM_ENTRY");
-    message[3] = (byte)type;
+    // message[3] = (byte)type;
+    message[3] = static_cast<byte>(type);
 }
 
 byte MessageExchange::getItemType()
@@ -44,7 +57,6 @@ byte MessageExchange::getItemType()
 
 void MessageExchange::setItemSize(itemSize size)
 {
-    warnIfPayloadDoesNotMatchTopic(ITEM_ENTRY, "ITEM_ENTRY");
     message[4] = (byte)size;
 }
 
@@ -55,7 +67,6 @@ byte MessageExchange::getItemSize()
 
 void MessageExchange::setItemPoint(byte point)
 {
-    warnIfPayloadDoesNotMatchTopic(ITEM_ENTRY, "ITEM_ENTRY");
     message[5] = point;
 }
 
@@ -83,7 +94,7 @@ void MessageExchange::previewMessage()
 
     if (uartMonitoringDevice != nullptr)
     {
-        uartMonitoringDevice->print("[MessageExchange Preview]");
+        uartMonitoringDevice->print("[MessageExchange] Data Preview: ");
         uartMonitoringDevice->println(buffer);
 
         uartMonitoringDevice->println(getMessageTopicName((messageTopic)message[1]));
@@ -108,11 +119,11 @@ void MessageExchange::sendMessage()
     {
         if (uartMonitoringDevice != nullptr)
         {
-            uartMonitoringDevice->println("UART device not set."); // Handle the error case where uartDevice is not set
+            uartMonitoringDevice->println("[MessageExchange] ERROR: UART device not set."); // Handle the error case where uartDevice is not set
         }
         else
         {
-            Serial.println("UART device not set."); // Handle the error case where uartDevice and uartMonitoringDevice are not set
+            Serial.println("[MessageExchange] ERROR: UART device not set."); // Handle the error case where uartDevice and uartMonitoringDevice are not set
         }
     }
 }
@@ -147,38 +158,21 @@ byte MessageExchange::handleIncomingMessage()
         clearSerialBuffer();
     }
 
-    if (prev > 0)
-    {
-        for (int i = 0; i < 10; i++)
-        {
-            uartMonitoringDevice->print(message[i]);
-            uartMonitoringDevice->print(" ");
-            if (message[i] == 254)
-            {
-                uartMonitoringDevice->println();
-                break;
-            }
-        }
-    }
+    // if (prev > 0)
+    // {
+    //     for (int i = 0; i < 10; i++)
+    //     {
+    //         uartMonitoringDevice->print(message[i]);
+    //         uartMonitoringDevice->print(" ");
+    //         if (message[i] == 254)
+    //         {
+    //             uartMonitoringDevice->println();
+    //             break;
+    //         }
+    //     }
+    // }
 
     return message[1];
-}
-
-void MessageExchange::warnIfPayloadDoesNotMatchTopic(messageTopic topic, const char *topicName)
-{
-    //    if (message[0] != topic)
-    //    {
-    //        char buffer[100];
-    //        snprintf(buffer, 100, "[WARNING!] One or more payload does not match the message topic: %s. Message parsing is likely going to misbehave.", topicName);
-    //        if (uartMonitoringDevice != nullptr)
-    //        {
-    //            uartMonitoringDevice->println(buffer);
-    //        }
-    //        else
-    //        {
-    //            Serial.println(buffer); // Handle the error case where uartMonitoringDevice is not set
-    //        }
-    //    }
 }
 
 void MessageExchange::clearSerialBuffer()
