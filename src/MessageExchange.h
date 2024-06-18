@@ -44,23 +44,26 @@ enum itemStatus
     PENDING
 };
 
+
+
 class MessageExchange
 {
-private:
+public:
     byte message[MESSAGE_SIZE];
 
 
     void warnIfPayloadDoesNotMatchTopic(messageTopic type, const char *typeName);
 
 
-    void clearSerialBuffer();
+
 
     const char* getMessageTopicName(messageTopic);
     const char* getItemTypeName(itemType);
     const char* getItemSizeName(itemSize);
     const char* getItemStatusName(itemStatus);
 
-public:
+// public:
+    void clearSerialBuffer();
     HardwareSerial *uartDevice;
     HardwareSerial *uartMonitoringDevice;
     MessageExchange();
@@ -68,7 +71,6 @@ public:
     void setUartDevice(HardwareSerial *device);
     void setUartMonitoringDevice(HardwareSerial *device);
     void createNewMessage(messageTopic type);
-
 
     /**
      * Methods for ITEM_ENTRY related messages

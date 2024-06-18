@@ -120,34 +120,47 @@ void MessageExchange::sendMessage()
 byte MessageExchange::handleIncomingMessage()
 {
     uint8_t byteData;
+    int prev = 0;
     int counter = 0;
 
-    while (true)
+    byte header = uartDevice->peek();
+
+    if (header == MESSAGE_START_CODE)
     {
-        byteData = uartDevice->read();
-        if (byteData != 255)
+        while (true)
         {
-            message[counter] = byteData;
-            counter += 1;
+            byteData = uartDevice->read();
+            if (byteData != 255)
+            {
+                message[counter] = byteData;
+                counter += 1;
+            }
+            if (byteData == 254)
+            {
+                prev = 1;
+                break;
+            }
         }
-        if (byteData == 254)
+    }
+    else
+    {
+        clearSerialBuffer();
+    }
+
+    if (prev > 0)
+    {
+        for (int i = 0; i < 10; i++)
         {
-            break;
+            uartMonitoringDevice->print(message[i]);
+            uartMonitoringDevice->print(" ");
+            if (message[i] == 254)
+            {
+                uartMonitoringDevice->println();
+                break;
+            }
         }
     }
 
-    clearSerialBuffer();
-
-    for (int i = 0; i < 10; i++)
-    {
-        uartMonitoringDevice->print(message[i]);
-        uartMonitoringDevice->print(" ");
-        if (message[i] == 254)
-        {
-            uartMonitoringDevice->println();
-            break;
-        }
-    }
     return message[1];
 }
 
