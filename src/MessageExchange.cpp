@@ -20,6 +20,19 @@ void MessageExchange::createNewMessage(messageTopic topic)
     message[MESSAGE_SIZE - 1] = MESSAGE_END_CODE;
 }
 
+void MessageExchange::setData(byte bytePosition, byte byteData){
+    if (bytePosition == 0 || bytePosition == MESSAGE_SIZE){
+        uartMonitoringDevice->println("[MessageExchange] WARNING: You're not supposed to alter start or stop byte. Nothing is set.");
+        return;
+    }
+
+    else if(bytePosition == 1){
+        uartMonitoringDevice->println("[MessageExchange] WARNING: You're not supposed to set the message topic this way");
+    }
+
+    message[bytePosition] = byteData;
+}
+
 byte MessageExchange::getData(byte byteNum)
 {
     if (byteNum == 0 || byteNum == MESSAGE_SIZE)
