@@ -65,6 +65,7 @@ public:
     void setUartMonitoringDevice(HardwareSerial *device);
     void createNewMessage(messageTopic type);
 
+    void setData(byte bytePosition, byte byteData);
     byte getData(byte byteNum);
 
     /**
